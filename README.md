@@ -68,6 +68,13 @@ Output:
 
 Row Example:
 ```java
+import org.dnsge.util.tableprinter.TablePrinter;
+import org.dnsge.util.tableprinter.TableRowFactory;
+import org.dnsge.util.tableprinter.TableRowFieldValue;
+import org.dnsge.util.tableprinter.TableRowMethodResult;
+
+import java.lang.reflect.InvocationTargetException;
+
 public class TableRowUsage {
     
     public static class Person {
