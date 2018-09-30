@@ -1,4 +1,4 @@
-package org.dnsge.util.tableprinter;
+package org.dnsge.util.tableprinter.column;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class TableColumn<T> {
     /**
      * @return Length of the longest string representation of the items
      */
-    int longestItemLength() {
+    public int longestItemLength() {
         T longest = columnData.get(0);
         for(T item : columnData) {
             if (item == null)

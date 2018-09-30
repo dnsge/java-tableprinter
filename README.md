@@ -10,7 +10,7 @@
 Column Example: 
 
 ```java
-import org.dnsge.util.tableprinter.TableColumn;
+import org.dnsge.util.tableprinter.column.TableColumn;
 import org.dnsge.util.tableprinter.TablePrinter;
 
 public class TableColumnUsage {
@@ -69,9 +69,9 @@ Output:
 Row Example:
 ```java
 import org.dnsge.util.tableprinter.TablePrinter;
-import org.dnsge.util.tableprinter.TableRowFactory;
-import org.dnsge.util.tableprinter.TableRowFieldValue;
-import org.dnsge.util.tableprinter.TableRowMethodResult;
+import org.dnsge.util.tableprinter.row.TableRowFactory;
+import org.dnsge.util.tableprinter.row.TableRowFieldValue;
+import org.dnsge.util.tableprinter.row.TableRowMethodResult;
 
 import java.lang.reflect.InvocationTargetException;
 

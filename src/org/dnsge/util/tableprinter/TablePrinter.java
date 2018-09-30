@@ -1,5 +1,9 @@
 package org.dnsge.util.tableprinter;
 
+import org.dnsge.util.tableprinter.column.TableColumn;
+import org.dnsge.util.tableprinter.row.TableRow;
+import org.dnsge.util.tableprinter.row.TableRowDetail;
+
 public class TablePrinter {
 
     /**
