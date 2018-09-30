@@ -44,7 +44,16 @@ public class TablePrinter {
             StringBuilder sb = new StringBuilder();
             columnNumber = 0;
             for (TableColumn column : columns) {
-                sb.append(padToLength(column.get(lineNum).toString(), longestByColumn[columnNumber]));
+                try {
+                    if (column.get(lineNum) == null) {
+                        sb.append(padToLength("", longestByColumn[columnNumber]));
+                    } else {
+                        sb.append(padToLength(column.get(lineNum).toString(), longestByColumn[columnNumber]));
+                    }
+                } catch (IndexOutOfBoundsException e) {
+                    sb.append(padToLength("", longestByColumn[columnNumber]));
+                }
+
                 sb.append(" | ");
                 columnNumber++;
             }

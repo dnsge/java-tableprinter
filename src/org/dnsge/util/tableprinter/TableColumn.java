@@ -38,6 +38,9 @@ public class TableColumn<T> {
     int longestItemLength() {
         T longest = columnData.get(0);
         for(T item : columnData) {
+            if (item == null)
+                continue;
+
             if (item.toString().length() > longest.toString().length()) {
                 longest = item;
             }
