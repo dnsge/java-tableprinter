@@ -13,31 +13,17 @@ public class TablePrinter {
         String[] lines = new String[longestColumnLength + 2];
         int[] longestByColumn = new int[columns.length];
 
-        StringBuilder headerBuilder = new StringBuilder();
-        int charCounter = 0;
-
         // Generate table header
+        String[] header = new String[columns.length];
         for (TableColumn column : columns) {
             longestByColumn[columnNumber] = column.longestItemLength();
-
-            String padded = padToLength(column.getColumnName(), longestByColumn[columnNumber]);
-
-            headerBuilder.append(padded);
-            headerBuilder.append(" | ");
-            charCounter += padded.length() + 2;
+            header[columnNumber] = padToLength(column.getColumnName(), longestByColumn[columnNumber]);
 
             columnNumber++;
         }
-
-        headerBuilder.setLength(headerBuilder.length() - 2);
-        lines[0] = headerBuilder.toString();
-
+        lines[0] = String.join(" | ", header);
         // Create header horizontal line
-        StringBuilder headerLineBuilder = new StringBuilder(charCounter);
-        for (int i = 0; i < charCounter + 1; i++){
-            headerLineBuilder.append("-");
-        }
-        lines[1] = headerLineBuilder.toString();
+        lines[1] = dashDivider(lines[0].length());
 
         // Create lines for the rest of the table
         for (int lineNum = 0; lineNum < longestColumnLength; lineNum++) {
@@ -74,12 +60,68 @@ public class TablePrinter {
         System.out.println(String.join("\n", lines));
     }
 
+    @SafeVarargs
+    public static <T> String[] rowsToStringTable(TableRow<T>... rows) {
+        if (rows.length == 0)
+            return new String[]{"Empty Table"};
+
+        String[] lines = new String[rows.length + 2];
+
+        int columnCount = rows[0].getFieldValues().length;
+        int[] longestByColumn = new int[columnCount];
+
+        // Find the longest per column
+        for (int columnNumb = 0; columnNumb < columnCount; columnNumb++) {
+            longestByColumn[columnNumb] = rows[0].getGeneratedFroms()[columnNumb].getHeaderTitle().length();
+            for (TableRow<T> row : rows) {
+                try {
+                    int thisLength = row.getFieldValues()[columnNumb].length();
+                    if (thisLength > longestByColumn[columnNumb]) {
+                        longestByColumn[columnNumb] = thisLength;
+                    }
+                } catch (NullPointerException ignored) {}
+            }
+        }
+
+        String[] headers = new String[columnCount];
+        int i = 0;
+        for (TableRowDetail trd : rows[0].getGeneratedFroms()) {
+            headers[i] = padToLength(trd.getHeaderTitle(), longestByColumn[i]);
+            i++;
+        }
+
+        lines[0] = String.join(" | ", headers);
+        lines[1] = dashDivider(lines[0].length());
+
+        i = 2;
+        for (TableRow<T> row : rows) {
+            String[] thisRow = new String[row.getFieldValues().length];
+            for (int columnNum = 0; columnNum < row.getFieldValues().length; columnNum++) {
+                thisRow[columnNum] = padToLength(row.getFieldValues()[columnNum], longestByColumn[columnNum]);
+            }
+            lines[i] = String.join(" | ", thisRow);
+            i++;
+        }
+
+        return lines;
+    }
+
+    @SafeVarargs
+    public static <T> void printRows(TableRow<T>... rows) {
+        String[] lines = rowsToStringTable(rows);
+        System.out.println(String.join("\n", lines));
+    }
+
+
     /**
      * @param input String to pad
      * @param desiredLength Desired length of resulting string
      * @return Padded String
      */
     private static String padToLength(String input, int desiredLength) {
+        if (input == null)
+            input = "";
+
         int spacesNeeded = desiredLength - input.length();
 
         if (spacesNeeded < 0)
@@ -108,6 +150,12 @@ public class TablePrinter {
         return longest.length();
     }
 
-
+    private static String dashDivider(int length) {
+        StringBuilder dashDividerBuilder = new StringBuilder(length);
+        for (int i = 0; i < length + 1; i++){
+            dashDividerBuilder.append("-");
+        }
+        return dashDividerBuilder.toString();
+    }
 
 }

@@ -5,14 +5,15 @@
  - Simple
  - Custom headers
  - Supports empty cells
+ - Make tables from rows or from columns
 
-Example: 
+Column Example: 
 
 ```java
 import org.dnsge.util.tableprinter.TableColumn;
 import org.dnsge.util.tableprinter.TablePrinter;
 
-public class TableUsage {
+public class TableColumnUsage {
 
     public static void main(String[] args) {
 
@@ -63,6 +64,56 @@ Output:
 45 | Donald Trump   | Republican  | New York City, NY
 47 |                | Democrat    |
 48 | Taylor Swift   | Independent | Reading, PA
+```
+
+Row Example:
+```java
+public class TableRowUsage {
+    
+    public static class Person {
+        public final String name;
+        public final int age;
+        public final String workplace;
+        private final int secretId;
+
+        public Person(String name, int age, String workplace, int secretId) {
+            this.name = name;
+            this.age = age;
+            this.workplace = workplace;
+            this.secretId = secretId;
+        }
+
+        public int getSecretId() {
+            return secretId;
+        }
+    }
+
+    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+        Person bobby = new Person("Bobby Bob", 28, "Google", 77744);
+        Person jimmy = new Person("Jimmy Joe", null, "Apple", 12345);
+        Person donald = new Person("Donald Duck", 63, "Disney", 65536);
+
+        TableRowFactory<Person> tf = new TableRowFactory<>(
+                new TableRowFieldValue("Name", "name"),
+                new TableRowFieldValue("Age", "age"),
+                new TableRowFieldValue("Workplace", "workplace"),
+                new TableRowMethodResult<>("Secret ID", "getSecretId")
+        );
+
+        TableRow<Person>[] rows = tf.makeTableRows(bobby, jimmy, donald);
+        TablePrinter.printRows(rows);
+    }
+    
+}
+
+```
+Output:
+```
+Name        | Age | Workplace | Secret ID
+------------------------------------------
+Bobby Bob   | 28  | Google    | 77744    
+Jimmy Joe   |     | Apple     | 12345    
+Donald Duck | 63  | Disney    | 65536    
 ```
 
 ###### Made by Daniel Sage (2018)
