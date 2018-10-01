@@ -70,8 +70,8 @@ Row Example:
 ```java
 import org.dnsge.util.tableprinter.TablePrinter;
 import org.dnsge.util.tableprinter.row.TableRowFactory;
-import org.dnsge.util.tableprinter.row.TableRowFieldValue;
-import org.dnsge.util.tableprinter.row.TableRowMethodResult;
+import org.dnsge.util.tableprinter.row.field.TableRowFieldValue;
+import org.dnsge.util.tableprinter.row.field.TableRowMethodResult;
 
 import java.lang.reflect.InvocationTargetException;
 
