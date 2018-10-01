@@ -5,11 +5,17 @@ import java.util.Arrays;
 public class TableRow<T> {
     private final T object;
     private final String[] fieldValues;
-    private final TableRowDetail[] generatedFroms;
+    private final RowConstructionSpecification generatedFroms;
 
-    public TableRow(T object, String[] fieldValues, TableRowDetail[] generatedFroms) {
+    public TableRow(T object, String[] fieldValues, RowConstructionSpecification generatedFroms) {
         this.object = object;
-        this.fieldValues = fieldValues;
+
+        String[] fixedFieldValues = new String[fieldValues.length];
+        for (int i = 0; i < fieldValues.length; i++) {
+            fixedFieldValues[i] = fieldValues[i] == null ? "" : fieldValues[i];
+        }
+
+        this.fieldValues = fixedFieldValues;
         this.generatedFroms = generatedFroms;
     }
 
@@ -25,7 +31,7 @@ public class TableRow<T> {
         return object;
     }
 
-    public TableRowDetail[] getGeneratedFroms() {
+    public RowConstructionSpecification getGeneratedFroms() {
         return generatedFroms;
     }
 }

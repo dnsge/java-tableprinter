@@ -4,17 +4,17 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 public class TableRowFactory<T> {
-    private final TableRowDetail[] fields;
+    private final RowConstructionSpecification fields;
 
     public TableRowFactory(TableRowDetail... fields) {
-        this.fields = fields;
+        this.fields = new RowConstructionSpecification(fields);
     }
 
     public TableRow<T> makeTableRow(T object) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        String[] r = new String[fields.length];
+        String[] r = new String[fields.length()];
 
         int i = 0;
-        for (TableRowDetail field : fields) {
+        for (TableRowDetail field : fields.constructionSpecification) {
             try {
                 r[i] = field.apply(object);
             } catch (NullPointerException e) {
@@ -36,5 +36,22 @@ public class TableRowFactory<T> {
         }
 
         return r.toArray(new TableRow[0]);
+    }
+
+    public static <S extends RowConstructable> TableRow<S> makeRowFromObject(S object) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, NoSuchFieldException {
+        RowConstructionSpecification specification = object.getConstructionSpecification();
+        String[] r = new String[specification.length()];
+
+        int i = 0;
+        for (TableRowDetail field : specification.constructionSpecification) {
+            try {
+                r[i] = field.apply(object);
+            } catch (NullPointerException e) {
+                r[i] = null;
+            }
+            i++;
+        }
+
+        return new TableRow<>(object, r, specification);
     }
 }

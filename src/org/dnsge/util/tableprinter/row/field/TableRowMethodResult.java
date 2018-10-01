@@ -1,4 +1,6 @@
-package org.dnsge.util.tableprinter.row;
+package org.dnsge.util.tableprinter.row.field;
+
+import org.dnsge.util.tableprinter.row.TableRowDetail;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

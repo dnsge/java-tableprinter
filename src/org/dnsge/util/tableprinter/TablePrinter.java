@@ -1,8 +1,9 @@
 package org.dnsge.util.tableprinter;
 
 import org.dnsge.util.tableprinter.column.TableColumn;
-import org.dnsge.util.tableprinter.row.TableRow;
-import org.dnsge.util.tableprinter.row.TableRowDetail;
+import org.dnsge.util.tableprinter.row.*;
+
+import java.lang.reflect.InvocationTargetException;
 
 public class TablePrinter {
 
@@ -64,8 +65,7 @@ public class TablePrinter {
         System.out.println(String.join("\n", lines));
     }
 
-    @SafeVarargs
-    public static <T> String[] rowsToStringTable(TableRow<T>... rows) {
+    public static String[] rowsToStringTable(TableRow... rows) {
         if (rows.length == 0)
             return new String[]{"Empty Table"};
 
@@ -76,8 +76,8 @@ public class TablePrinter {
 
         // Find the longest per column
         for (int columnNumb = 0; columnNumb < columnCount; columnNumb++) {
-            longestByColumn[columnNumb] = rows[0].getGeneratedFroms()[columnNumb].getHeaderTitle().length();
-            for (TableRow<T> row : rows) {
+            longestByColumn[columnNumb] = rows[0].getGeneratedFroms().constructionSpecification[columnNumb].getHeaderTitle().length();
+            for (TableRow row : rows) {
                 try {
                     int thisLength = row.getFieldValues()[columnNumb].length();
                     if (thisLength > longestByColumn[columnNumb]) {
@@ -89,7 +89,7 @@ public class TablePrinter {
 
         String[] headers = new String[columnCount];
         int i = 0;
-        for (TableRowDetail trd : rows[0].getGeneratedFroms()) {
+        for (TableRowDetail trd : rows[0].getGeneratedFroms().constructionSpecification) {
             headers[i] = padToLength(trd.getHeaderTitle(), longestByColumn[i]);
             i++;
         }
@@ -98,7 +98,7 @@ public class TablePrinter {
         lines[1] = dashDivider(lines[0].length());
 
         i = 2;
-        for (TableRow<T> row : rows) {
+        for (TableRow row : rows) {
             String[] thisRow = new String[row.getFieldValues().length];
             for (int columnNum = 0; columnNum < row.getFieldValues().length; columnNum++) {
                 thisRow[columnNum] = padToLength(row.getFieldValues()[columnNum], longestByColumn[columnNum]);
@@ -110,12 +110,37 @@ public class TablePrinter {
         return lines;
     }
 
-    @SafeVarargs
-    public static <T> void printRows(TableRow<T>... rows) {
+    public static void printRows(TableRow... rows) {
         String[] lines = rowsToStringTable(rows);
         System.out.println(String.join("\n", lines));
     }
 
+    @SafeVarargs
+    public static <T extends RowConstructable> String[] objectsToStringTable(T... objects) {
+        TableRow[] tableRows = new TableRow[objects.length];
+        RowConstructionSpecification firstSpecification = objects[0].getConstructionSpecification();
+
+        int i = 0;
+        for (T obj : objects) {
+            if (!obj.getConstructionSpecification().equals(firstSpecification))
+                throw new RuntimeException("Row construction specification mismatch");
+
+            try {
+                tableRows[i] = TableRowFactory.makeRowFromObject(obj);
+            } catch (InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            i++;
+        }
+
+        return rowsToStringTable(tableRows);
+    }
+
+    @SafeVarargs
+    public static <T extends RowConstructable> void printObjectRows(T... objects) {
+        String[] lines = objectsToStringTable(objects);
+        System.out.println(String.join("\n", lines));
+    }
 
     /**
      * @param input String to pad
