@@ -129,6 +129,7 @@ public class TablePrinter {
                 tableRows[i] = TableRowFactory.makeRowFromObject(obj);
             } catch (InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
+                return null;
             }
             i++;
         }

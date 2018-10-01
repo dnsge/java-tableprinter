@@ -10,7 +10,7 @@ public class TableRowFactory<T> {
         this.fields = new RowConstructionSpecification(fields);
     }
 
-    public TableRow<T> makeTableRow(T object) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public TableRow<T> makeTableRow(T object) {
         String[] r = new String[fields.length()];
 
         int i = 0;
@@ -19,6 +19,9 @@ public class TableRowFactory<T> {
                 r[i] = field.apply(object);
             } catch (NullPointerException e) {
                 r[i] = null;
+            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+                return null;
             }
             i++;
         }
@@ -28,7 +31,7 @@ public class TableRowFactory<T> {
 
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public final TableRow<T>[] makeTableRows(T... objects) throws NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException {
+    public final TableRow<T>[] makeTableRows(T... objects) {
         ArrayList<TableRow<T>> r = new ArrayList<>();
 
         for (T object : objects) {
