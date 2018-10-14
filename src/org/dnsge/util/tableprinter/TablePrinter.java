@@ -15,7 +15,7 @@ import java.io.PrintStream;
 public class TablePrinter {
 
     /**
-     * Creates a {@code String[]} of lines from some {@code TableColumn}s
+     * Creates a {@code String[]} of lines from some {@code TableColumns}
      *
      * @param columns {@code TableColumn[]} of table columns to make the table from
      * @return {@code String[]} of the lines of the table
@@ -87,7 +87,7 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@code String[]} of lines from some {@code TableRow}s of the same type
+     * Creates a {@code String[]} of lines from some {@code TableRows} of the same type
      *
      * @param rows {@code TableRow[]} of table rows to make the table from
      * @return {@code String[]} of the lines of the table

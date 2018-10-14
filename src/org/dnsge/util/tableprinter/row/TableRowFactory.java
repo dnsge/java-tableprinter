@@ -18,7 +18,7 @@ public final class TableRowFactory<T> {
     /**
      * Create a new Factory with the desired {@code RowGenerationSpecification}
      *
-     * @param specification {@code RowGenerationSpecification} to be used when making the {@code TableRow}s
+     * @param specification {@code RowGenerationSpecification} to be used when making the {@code TableRows}
      */
     public TableRowFactory(RowGenerationSpecification<T> specification) {
         this.specification = specification;

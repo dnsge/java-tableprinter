@@ -11,7 +11,7 @@ public final class RowGenerationSpecification<T> {
     private TableValueFetcher<T>[] tableValueFetchers;
 
     /**
-     * Create a {@code RowGenerationSpecification} from the desired {@code TableValueFetcher}s
+     * Create a {@code RowGenerationSpecification} from the desired {@code TableValueFetchers}
      *
      * @param tableValueFetchers {@code TableValueFetcher[]} of fetchers to use
      * @see TableValueFetcher
