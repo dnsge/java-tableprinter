@@ -1,10 +1,10 @@
-import org.dnsge.util.tableprinter.TablePrinter;
-
 import org.dnsge.util.tableprinter.column.TableColumn;
+import org.dnsge.util.tableprinter.TablePrinter;
 
 public class ColumnsToTable {
 
     public static void main(String[] args) {
+
         TableColumn<String> nameColumn = new TableColumn<>("Name", new String[]{
                 "George W. Bush",
                 "Barack Obama",
@@ -13,7 +13,7 @@ public class ColumnsToTable {
                 "Taylor Swift",
         });
 
-        TableColumn<Integer> numberColumn = new TableColumn<>("#", new Integer[]{
+        TableColumn<Integer> numberColumn = new TableColumn<>("#", new Integer[] {
                 43,
                 44,
                 45,

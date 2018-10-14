@@ -1,52 +1,45 @@
 import org.dnsge.util.tableprinter.TablePrinter;
-
-import org.dnsge.util.tableprinter.row.RowConstructable;
-import org.dnsge.util.tableprinter.row.RowConstructionSpecification;
-
-import org.dnsge.util.tableprinter.row.field.TableRowFieldValue;
-import org.dnsge.util.tableprinter.row.field.TableRowMethodResult;
-import org.dnsge.util.tableprinter.row.field.TableRowRawValue;
+import org.dnsge.util.tableprinter.row.NameValue;
+import org.dnsge.util.tableprinter.row.RowMakeable;
+import static org.dnsge.util.tableprinter.row.NameValue.nameValue;
 
 public class ObjectsToTable {
 
-    public static class Person implements RowConstructable {
+    public static class Person implements RowMakeable {
         public final String name;
         public final Integer age;
         public final String workplace;
-        private final int secretId;
+        private final String password;
 
-        // Make sure that every RowConstructionSpecification is the same object!
-        private static final RowConstructionSpecification personSpec = new RowConstructionSpecification(
-                new TableRowFieldValue("Name", "name"),
-                new TableRowFieldValue("Age", "age"),
-                new TableRowFieldValue("Workplace", "workplace"),
-                new TableRowMethodResult<>("Secret ID", "getSecretId"),
-                new TableRowRawValue("Static Field", "Same across all!")
-        );
-
-        public RowConstructionSpecification getConstructionSpecification() {
-            return personSpec;
-        }
-
-        public Person(String name, Integer age, String workplace, int secretId) {
+        public Person(String name, Integer age, String workplace, String password) {
             this.name = name;
             this.age = age;
             this.workplace = workplace;
-            this.secretId = secretId;
+            this.password = password;
         }
 
-        public int getSecretId() {
-            return secretId;
+        public int birthYear(int currentYear) {
+            return currentYear - age;
         }
 
+        @Override
+        public NameValue[] makeRow() {
+            return new NameValue[]{
+                    nameValue("Age", age),
+                    nameValue("Name", name),
+                    nameValue("Birth year", birthYear(2018)),
+                    nameValue("Workplace", workplace),
+                    nameValue("Password", password)
+            };
+        }
     }
 
     public static void main(String[] args) {
-        Person bobby = new Person("Bobby Bob", 28, "Google", 77744);
-        Person jimmy = new Person("Little Jimmy", 6, null, 12345);
-        Person donald = new Person("Donald Duck", 63, "Disney", 65536);
+        Person pA = new Person("Amelia", 28, "Google", "secretPassword");
+        Person pB = new Person("David", 16, null, "abc12345");
+        Person pC = new Person("Joey", 63, "Disney", "correcthorsebatterystaple");
 
-        TablePrinter.printObjectRows(bobby, jimmy, donald);
+        TablePrinter.printObjects(pA, pB, pC);
     }
 
 }

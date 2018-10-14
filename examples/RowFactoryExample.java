@@ -1,8 +1,6 @@
 import org.dnsge.util.tableprinter.TablePrinter;
-import org.dnsge.util.tableprinter.row.TableRow;
-import org.dnsge.util.tableprinter.row.TableRowFactory;
-import org.dnsge.util.tableprinter.row.field.TableRowFieldValue;
-import org.dnsge.util.tableprinter.row.field.TableRowMethodResult;
+import org.dnsge.util.tableprinter.row.*;
+import static org.dnsge.util.tableprinter.row.NameValue.nameValue;
 
 public class RowFactoryExample {
 
@@ -17,20 +15,27 @@ public class RowFactoryExample {
             this.workplace = workplace;
         }
 
+        public int birthYear(int currentYear) {
+            return currentYear - age;
+        }
+
     }
 
-    public static void main(String[] args) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+    public static void main(String[] args) {
+        RowGenerationSpecification<Person> rcs = new RowGenerationSpecification<>(
+                (Person p) -> nameValue("Name", p.name),
+                (Person p) -> nameValue("Age", String.valueOf(p.age)),
+                (Person p) -> nameValue("Birth year", p.birthYear(2018)),
+                (Person p) -> nameValue("Workplace", p.workplace)
+        );
+
         Person pA = new Person("Person A", 28, "Google");
         Person pB = new Person("Person B", 16, null);
         Person pC = new Person("Person C", 63, "Disney");
 
-        TableRowFactory<Person> tf = new TableRowFactory<>(
-                new TableRowFieldValue("Name", "name"),
-                new TableRowFieldValue("Age", "age"),
-                new TableRowFieldValue("Workplace", "workplace")
-        );
+        TableRowFactory<Person> tf = new TableRowFactory<>(rcs);
+        TableRow[] rows = tf.makeTableRows(pA, pB, pC);
 
-        TableRow<Person>[] rows = tf.makeTableRows(pA, pB, pC);
         TablePrinter.printRows(rows);
     }
 

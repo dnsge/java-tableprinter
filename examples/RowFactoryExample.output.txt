@@ -1,5 +1,5 @@
-Name     | Age | Workplace
----------------------------
-Person A | 28  | Google
-Person B | 16  |
-Person C | 63  | Disney
+Name     | Age | Birth year | Workplace
+----------------------------------------
+Person A | 28  | 1990       | Google   
+Person B | 16  | 2002       |          
+Person C | 63  | 1955       | Disney   
