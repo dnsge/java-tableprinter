@@ -161,6 +161,7 @@ public class TablePrinter {
     /**
      * Creates a {@code String[]} of lines from some Objects that implement {@code RowMakeable}
      *
+     * @param <T> Type of Objects being used
      * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to make the table from
      * @return {@code String[]} of the lines of the table
      * @see RowMakeable
@@ -182,6 +183,7 @@ public class TablePrinter {
     /**
      * Prints a {@code RowMakeable[]} to {@code System.out}
      *
+     * @param <T> Type of Objects being used
      * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to print
      * @see RowMakeable
      */
@@ -193,6 +195,7 @@ public class TablePrinter {
     /**
      * Prints a {@code RowMakeable[]} to a {@code PrintStream}
      *
+     * @param <T> Type of Objects being used
      * @param stream  {@code PrintStream} to print to
      * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to print
      * @see PrintStream
