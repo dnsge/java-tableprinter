@@ -1,60 +1,69 @@
 package org.dnsge.util.tableprinter.row;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
-public class TableRowFactory<T> {
-    private final RowConstructionSpecification fields;
+/**
+ * Factory to generate {@code TableRow} objects from a {@code RowGenerationSpecification}
+ *
+ * @param <T> Type of objects being fed in to the factory
+ * @author Daniel Sage
+ * @version 1.2
+ *
+ * @see TableRow
+ * @see RowGenerationSpecification
+ */
+public final class TableRowFactory<T> {
+    private final RowGenerationSpecification<T> specification;
 
-    public TableRowFactory(TableRowDetail... fields) {
-        this.fields = new RowConstructionSpecification(fields);
+    /**
+     * Create a new Factory with the desired {@code RowGenerationSpecification}
+     *
+     * @param specification {@code RowGenerationSpecification} to be used when making the {@code TableRow}s
+     */
+    public TableRowFactory(RowGenerationSpecification<T> specification) {
+        this.specification = specification;
     }
 
-    public TableRow<T> makeTableRow(T object) {
-        String[] r = new String[fields.length()];
+    /**
+     * Make a {@code TableRow} from an Object
+     *
+     * @param object Object to create the row from
+     * @return {@code TableRow} representing the desired Object
+     */
+    public TableRow makeTableRow(T object) {
+        String[] r = new String[specification.getTableValueFetchers().length];
+        String[] headers = new String[specification.getTableValueFetchers().length];
 
         int i = 0;
-        for (TableRowDetail field : fields.constructionSpecification) {
+        for (TableValueFetcher<T> field : specification.getTableValueFetchers()) {
+            NameValue nv =  field.get(object);
             try {
-                r[i] = field.apply(object);
+                r[i] = nv.getValue().toString();
             } catch (NullPointerException e) {
                 r[i] = null;
-            } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | NoSuchFieldException e) {
-                e.printStackTrace();
-                return null;
             }
+            headers[i] = nv.getName();
             i++;
         }
 
-        return new TableRow<>(object, r, fields);
+        return new TableRow(r, headers);
     }
 
+    /**
+     * Make a {@code TableRow[]} from an Array of Objects
+     *
+     * @param objects Objects to create the rows from
+     * @return {@code TableRow[]} of the desired Objects
+     */
     @SafeVarargs
     @SuppressWarnings("unchecked")
-    public final TableRow<T>[] makeTableRows(T... objects) {
-        ArrayList<TableRow<T>> r = new ArrayList<>();
+    public final TableRow[] makeTableRows(T... objects) {
+        ArrayList<TableRow> r = new ArrayList<>();
 
         for (T object : objects) {
             r.add(makeTableRow(object));
         }
 
         return r.toArray(new TableRow[0]);
-    }
-
-    public static <S extends RowConstructable> TableRow<S> makeRowFromObject(S object) throws InvocationTargetException, NoSuchMethodException, IllegalAccessException, NoSuchFieldException {
-        RowConstructionSpecification specification = object.getConstructionSpecification();
-        String[] r = new String[specification.length()];
-
-        int i = 0;
-        for (TableRowDetail field : specification.constructionSpecification) {
-            try {
-                r[i] = field.apply(object);
-            } catch (NullPointerException e) {
-                r[i] = null;
-            }
-            i++;
-        }
-
-        return new TableRow<>(object, r, specification);
     }
 }

@@ -1,37 +1,63 @@
 package org.dnsge.util.tableprinter.row;
 
-import java.util.Arrays;
+/**
+ * Class that represents a row in a table
+ *
+ * @author Daniel Sage
+ * @version 1.2
+ */
+public final class TableRow {
+    private final String[] cellValues;
+    private final String[] headers;
 
-public class TableRow<T> {
-    private final T object;
-    private final String[] fieldValues;
-    private final RowConstructionSpecification generatedFroms;
-
-    public TableRow(T object, String[] fieldValues, RowConstructionSpecification generatedFroms) {
-        this.object = object;
-
-        String[] fixedFieldValues = new String[fieldValues.length];
-        for (int i = 0; i < fieldValues.length; i++) {
-            fixedFieldValues[i] = fieldValues[i] == null ? "" : fieldValues[i];
+    /**
+     * Create a {@code TableRow} from predefined values and headers
+     *
+     * @param cellValues {@code String[]} of values for each cell in the row
+     * @param headers {@code String[]} of headers for each cell in the row
+     */
+    public TableRow(String[] cellValues, String[] headers) {
+        String[] fixedFieldValues = new String[cellValues.length];
+        for (int i = 0; i < cellValues.length; i++) {
+            fixedFieldValues[i] = cellValues[i] == null ? "" : cellValues[i];
         }
 
-        this.fieldValues = fixedFieldValues;
-        this.generatedFroms = generatedFroms;
+        this.cellValues = fixedFieldValues;
+        this.headers = headers;
     }
 
-    public String[] getFieldValues() {
-        return fieldValues;
+    /**
+     * Create a {@code TableRow} from a {@code NameValue[]} representing values and headers
+     *
+     * @param createFrom {@code NameValue[]} representing values and headers
+     */
+    public TableRow(NameValue[] createFrom) {
+        cellValues = new String[createFrom.length];
+        headers = new String[createFrom.length];
+
+        int i = 0;
+        for (NameValue nv : createFrom) {
+            try {
+                cellValues[i] = nv.getValue().toString();
+            } catch (NullPointerException e) {
+                cellValues[i] = "";
+            }
+            headers[i] = nv.getName();
+            i++;
+        }
     }
 
-    public String getFieldValuesString() {
-        return Arrays.toString(fieldValues);
+    /**
+     * @return values of all cells
+     */
+    public String[] getCellValues() {
+        return cellValues;
     }
 
-    public T getObject() {
-        return object;
-    }
-
-    public RowConstructionSpecification getGeneratedFroms() {
-        return generatedFroms;
+    /**
+     * @return headers of all cells
+     */
+    public String[] getHeaders() {
+        return headers;
     }
 }

@@ -1,15 +1,25 @@
 package org.dnsge.util.tableprinter;
 
 import org.dnsge.util.tableprinter.column.TableColumn;
-import org.dnsge.util.tableprinter.row.*;
+import org.dnsge.util.tableprinter.row.RowMakeable;
+import org.dnsge.util.tableprinter.row.TableRow;
 
-import java.lang.reflect.InvocationTargetException;
+import java.io.PrintStream;
 
+/**
+ * Class to print different objects in the form of a table
+ *
+ * @author Daniel Sage
+ * @version 1.2
+ */
 public class TablePrinter {
 
     /**
-     * @param columns Array of table columns to make the table from
-     * @return String Array of the lines of the table
+     * Creates a {@code String[]} of lines from some {@code TableColumn}s
+     *
+     * @param columns {@code TableColumn[]} of table columns to make the table from
+     * @return {@code String[]} of the lines of the table
+     * @see TableColumn
      */
     public static String[] columnsToStringTable(TableColumn... columns) {
         int columnNumber = 0;
@@ -48,9 +58,7 @@ public class TablePrinter {
                 sb.append(" | ");
                 columnNumber++;
             }
-
             sb.setLength(sb.length() - 2);
-
             lines[lineNum + 2] = sb.toString();
         }
 
@@ -58,89 +66,142 @@ public class TablePrinter {
     }
 
     /**
-     * @param columns Array of table columns to print
+     * Prints a {@code TableColumn[]} to {@code System.out}
+     *
+     * @param columns {@code TableColumn[]} of table columns to print
      */
     public static void printColumns(TableColumn... columns) {
-        String[] lines = columnsToStringTable(columns);
-        System.out.println(String.join("\n", lines));
+        printColumns(System.out, columns);
     }
 
+    /**
+     * Prints a {@code TableColumn[]} to a {@code PrintStream}
+     *
+     * @param stream  {@code PrintStream} to print to
+     * @param columns {@code TableColumn[]} of table columns to print
+     * @see PrintStream
+     */
+    public static void printColumns(PrintStream stream, TableColumn... columns) {
+        String[] lines = columnsToStringTable(columns);
+        stream.println(String.join("\n", lines));
+    }
+
+    /**
+     * Creates a {@code String[]} of lines from some {@code TableRow}s of the same type
+     *
+     * @param rows {@code TableRow[]} of table rows to make the table from
+     * @return {@code String[]} of the lines of the table
+     * @see TableRow
+     */
     public static String[] rowsToStringTable(TableRow... rows) {
         if (rows.length == 0)
             return new String[]{"Empty Table"};
 
         String[] lines = new String[rows.length + 2];
 
-        int columnCount = rows[0].getFieldValues().length;
+        int columnCount = rows[0].getCellValues().length;
         int[] longestByColumn = new int[columnCount];
+        String[] headers = rows[0].getHeaders();
 
         // Find the longest per column
-        for (int columnNumb = 0; columnNumb < columnCount; columnNumb++) {
-            longestByColumn[columnNumb] = rows[0].getGeneratedFroms().constructionSpecification[columnNumb].getHeaderTitle().length();
-            for (TableRow row : rows) {
+        for (TableRow row : rows) {
+            int i = 0;
+            for (String fieldValue : row.getCellValues()) {
                 try {
-                    int thisLength = row.getFieldValues()[columnNumb].length();
-                    if (thisLength > longestByColumn[columnNumb]) {
-                        longestByColumn[columnNumb] = thisLength;
-                    }
-                } catch (NullPointerException ignored) {}
+                    longestByColumn[i] = Math.max(Math.max(longestByColumn[i], fieldValue.length()), row.getHeaders()[i].length());
+                } catch (NullPointerException ignored) { }
+                i++;
             }
         }
 
-        String[] headers = new String[columnCount];
-        int i = 0;
-        for (TableRowDetail trd : rows[0].getGeneratedFroms().constructionSpecification) {
-            headers[i] = padToLength(trd.getHeaderTitle(), longestByColumn[i]);
-            i++;
+        int columnNumber = 0;
+        for (String header : headers) {
+            headers[columnNumber] = padToLength(header, longestByColumn[columnNumber]);
+            columnNumber++;
         }
 
         lines[0] = String.join(" | ", headers);
         lines[1] = dashDivider(lines[0].length());
 
-        i = 2;
+        // Generate rows
+        int rowNumber = 2;
         for (TableRow row : rows) {
-            String[] thisRow = new String[row.getFieldValues().length];
-            for (int columnNum = 0; columnNum < row.getFieldValues().length; columnNum++) {
-                thisRow[columnNum] = padToLength(row.getFieldValues()[columnNum], longestByColumn[columnNum]);
+            String[] thisRow = new String[row.getCellValues().length];
+            for (int columnNum = 0; columnNum < row.getCellValues().length; columnNum++) {
+                thisRow[columnNum] = padToLength(row.getCellValues()[columnNum], longestByColumn[columnNum]);
             }
-            lines[i] = String.join(" | ", thisRow);
-            i++;
+            lines[rowNumber] = String.join(" | ", thisRow);
+            rowNumber++;
         }
 
         return lines;
     }
 
+    /**
+     * Prints a {@code TableRow[]} to {@code System.out}
+     *
+     * @param rows {@code TableRow[]} of table rows of one type to print
+     */
     public static void printRows(TableRow... rows) {
-        String[] lines = rowsToStringTable(rows);
-        System.out.println(String.join("\n", lines));
+        printRows(System.out, rows);
     }
 
+    /**
+     * Prints a {@code TableRow[]} to a {@code PrintStream}
+     *
+     * @param stream  {@code PrintStream} to print to
+     * @param rows {@code TableRow[]} of table rows of one type to print
+     * @see PrintStream
+     */
+    public static void printRows(PrintStream stream, TableRow... rows) {
+        String[] lines = rowsToStringTable(rows);
+        stream.println(String.join("\n", lines));
+    }
+
+    /**
+     * Creates a {@code String[]} of lines from some Objects that implement {@code RowMakeable}
+     *
+     * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to make the table from
+     * @return {@code String[]} of the lines of the table
+     * @see RowMakeable
+     */
     @SafeVarargs
-    public static <T extends RowConstructable> String[] objectsToStringTable(T... objects) {
+    @SuppressWarnings("unchecked")
+    public static <T extends RowMakeable> String[] objectsToStringTable(T... objects) {
         TableRow[] tableRows = new TableRow[objects.length];
-        RowConstructionSpecification firstSpecification = objects[0].getConstructionSpecification();
 
-        int i = 0;
-        for (T obj : objects) {
-            if (!obj.getConstructionSpecification().equals(firstSpecification))
-                throw new RuntimeException("Row construction specification mismatch");
-
-            try {
-                tableRows[i] = TableRowFactory.makeRowFromObject(obj);
-            } catch (InvocationTargetException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
-                e.printStackTrace();
-                return null;
-            }
-            i++;
+        int rowNumber = 0;
+        for (T object : objects) {
+            tableRows[rowNumber] = new TableRow(object.makeRow());
+            rowNumber++;
         }
 
         return rowsToStringTable(tableRows);
     }
 
+    /**
+     * Prints a {@code RowMakeable[]} to {@code System.out}
+     *
+     * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to print
+     * @see RowMakeable
+     */
     @SafeVarargs
-    public static <T extends RowConstructable> void printObjectRows(T... objects) {
+    public static <T extends RowMakeable> void printObjects(T... objects) {
+        printObjects(System.out, objects);
+    }
+
+    /**
+     * Prints a {@code RowMakeable[]} to a {@code PrintStream}
+     *
+     * @param stream  {@code PrintStream} to print to
+     * @param objects {@code RowMakeable[]} of {@code RowMakeable} Objects to print
+     * @see PrintStream
+     * @see RowMakeable
+     */
+    @SafeVarargs
+    public static <T extends RowMakeable> void printObjects(PrintStream stream, T... objects) {
         String[] lines = objectsToStringTable(objects);
-        System.out.println(String.join("\n", lines));
+        stream.println(String.join("\n", lines));
     }
 
     /**
@@ -180,6 +241,12 @@ public class TablePrinter {
         return longest.length();
     }
 
+    /**
+     * Creates a dash divider of a specific length
+     *
+     * @param length Length of desired dash divider
+     * @return String of dashes
+     */
     private static String dashDivider(int length) {
         StringBuilder dashDividerBuilder = new StringBuilder(length);
         for (int i = 0; i < length + 1; i++){
