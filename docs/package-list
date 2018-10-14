@@ -1,4 +1,3 @@
 org.dnsge.util.tableprinter
 org.dnsge.util.tableprinter.column
 org.dnsge.util.tableprinter.row
-org.dnsge.util.tableprinter.row.field
