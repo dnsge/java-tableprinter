@@ -30,7 +30,7 @@ A typical table would look like this:
    * [Output](examples/ColumnsToTable.output.txt)
  - [Row Factory Example](examples/RowFactoryExample.java)
    * [Output](examples/RowFactoryExample.output.txt)
- - [RowConstructable Object to Table](examples/ObjectsToTable.java)
+ - [RowMakeable Object to Table](examples/ObjectsToTable.java)
    * [Output](examples/ObjectsToTable.output.txt)
    
 ##### Documentation available at [dnsge.github.io/java-tableprinter](https://dnsge.github.io/java-tableprinter/)
