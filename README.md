@@ -2,7 +2,7 @@
 
 *Generate formatted tables with easy-to-read formatting*
 
-![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)
+[![GitHub](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://opensource.org/licenses/mit-license.php)
 
 A library that allows you to generate text based tables from different rows, columns, or custom objects.
 
