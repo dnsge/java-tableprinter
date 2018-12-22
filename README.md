@@ -8,30 +8,21 @@ A library that allows you to generate text based tables from different rows, col
 
 A typical table would look like this:
 ```text
-#  | Name           | Party       | Birthplace
-------------------------------------------------------
-43 | George W. Bush | Republican  | New Haven, CT
-44 | Barack Obama   | Democrat    | Honolulu, HI
+#  | Name           | Party       | Birthplace       
+-----------------------------------------------------
+43 | George W. Bush | Republican  | New Haven, CT    
+44 | Barack Obama   | Democrat    | Honolulu, HI     
 45 | Donald Trump   | Republican  | New York City, NY
-47 |                | Democrat    |
-48 | Taylor Swift   | Independent | Reading, PA
+47 |                | Democrat    |                  
+48 | Taylor Swift   | Independent | Reading, PA      
 ```
 
 ### Features
- - Simple
+ - Simple & easy
  - Custom headers
  - Supports empty cells
  - Make tables from rows or columns
- - Print out tables based off of custom objects
- 
-### Examples
-
- - [Columns to Table](examples/ColumnsToTable.java)
-   * [Output](examples/ColumnsToTable.output.txt)
- - [Row Factory Example](examples/RowFactoryExample.java)
-   * [Output](examples/RowFactoryExample.output.txt)
- - [RowConstructable Object to Table](examples/ObjectsToTable.java)
-   * [Output](examples/ObjectsToTable.output.txt)
+ - Convert custom objects into tables
    
 ##### Documentation available at [dnsge.github.io/java-tableprinter](https://dnsge.github.io/java-tableprinter/)
 

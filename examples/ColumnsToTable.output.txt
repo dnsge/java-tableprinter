@@ -1,7 +1,0 @@
-#  | Name           | Party       | Birthplace
-------------------------------------------------------
-43 | George W. Bush | Republican  | New Haven, CT
-44 | Barack Obama   | Democrat    | Honolulu, HI
-45 | Donald Trump   | Republican  | New York City, NY
-47 |                | Democrat    |
-48 | Taylor Swift   | Independent | Reading, PA

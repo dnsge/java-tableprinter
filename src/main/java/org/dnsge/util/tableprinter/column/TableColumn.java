@@ -26,6 +26,7 @@ package org.dnsge.util.tableprinter.column;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -36,11 +37,12 @@ import java.util.List;
  * @version 1.2
  */
 public class TableColumn<T> {
+
     private final String columnName;
-    private final ArrayList<T> columnData;
+    private final List<T> columnData;
 
     /**
-     * Create an empty {@code TableColumn} with a name
+     * Creates an empty {@code TableColumn} with a name
      *
      * @param columnName Name of the column
      */
@@ -50,14 +52,25 @@ public class TableColumn<T> {
     }
 
     /**
-     * Create a {@code TableColumn} with an array of preexisting values
+     * Creates a {@code TableColumn} with an array of preexisting values
      *
      * @param columnName Name of the column
-     * @param values Values in the column
+     * @param values     Values in the column
      */
-    public TableColumn(String columnName, T[] values) {
+    @SafeVarargs
+    public TableColumn(String columnName, T... values) {
+        this(columnName, Arrays.asList(values));
+    }
+
+    /**
+     * Creates a {@code TableColumn} with an array of preexisting values
+     *
+     * @param columnName Name of the column
+     * @param values     Values in the column
+     */
+    public TableColumn(String columnName, Collection<T> values) {
         this.columnName = columnName;
-        this.columnData = new ArrayList<>(Arrays.asList(values));
+        this.columnData = new ArrayList<>(values);
     }
 
     /**
@@ -80,7 +93,7 @@ public class TableColumn<T> {
      */
     public int longestItemLength() {
         T longest = columnData.get(0);
-        for(T item : columnData) {
+        for (T item : columnData) {
             if (item == null)
                 continue;
 

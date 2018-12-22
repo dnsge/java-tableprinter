@@ -1,5 +1,0 @@
-Age | Name   | Birth year | Workplace | Password                 
-------------------------------------------------------------------
-28  | Amelia | 1990       | Google    | secretPassword           
-16  | David  | 2002       |           | abc12345                 
-63  | Joey   | 1955       | Disney    | correcthorsebatterystaple
