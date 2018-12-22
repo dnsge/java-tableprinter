@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"org.dnsge.util.tableprinter"},{"l":"org.dnsge.util.tableprinter.column"},{"l":"org.dnsge.util.tableprinter.row"}]
+packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"org.dnsge.util.tableprinter"},{"l":"org.dnsge.util.tableprinter.column"},{"l":"org.dnsge.util.tableprinter.row"}]
