@@ -23,6 +23,7 @@ A typical table would look like this:
  - Supports empty cells
  - Make tables from rows or columns
  - Convert custom objects into tables
+ - Protocols to map objects to rows without adding annotations
    
 ##### Documentation available at [dnsge.github.io/java-tableprinter](https://dnsge.github.io/java-tableprinter/)
 

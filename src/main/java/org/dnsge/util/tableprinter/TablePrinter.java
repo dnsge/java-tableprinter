@@ -167,7 +167,7 @@ public class TablePrinter {
      * @return Array of {@link TableRow TableRows}
      */
     public static TableRow[] objectsToRowArray(TableRowItem... rows) {
-        return Stream.of(rows).map(RowFactory::makeRow).toArray(TableRow[]::new);
+        return Stream.of(rows).map(RowFactory::makeRowFromTableRowItem).toArray(TableRow[]::new);
     }
 
     /**

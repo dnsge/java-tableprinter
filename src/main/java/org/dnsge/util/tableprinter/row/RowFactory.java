@@ -15,13 +15,48 @@ import java.util.Objects;
  * Class with static methods that creates {@link TableRow TableRows} from
  * different Objects
  *
+ * @param <T> Type of objects that will be made into a {@link TableRow}
  * @author Daniel Sage
- * @version 1.0
+ * @version 1.1
  */
-public class RowFactory {
+public class RowFactory<T> {
 
-    private RowFactory() {
+    private RowMappingProtocol<T> protocol;
 
+    /**
+     * Creates a new RowFactory that creates rows based off of a {@link RowMappingProtocol}
+     *
+     * @param protocol {@link RowMappingProtocol} that will be used to create rows
+     */
+    public RowFactory(RowMappingProtocol<T> protocol) {
+        this.protocol = protocol;
+    }
+
+    /**
+     * Creates a {@link TableRow} from an object of type {@code T}
+     *
+     * @param object Object to make into a {@link TableRow}
+     * @return new {@link TableRow}
+     */
+    public TableRow makeRow(T object) {
+        return new TableRow(protocol.getTableHeader(), protocol.apply(object));
+    }
+
+    /**
+     * Creates multiple {@link TableRow TableRows} from objects of type {@code T}
+     *
+     * @param objects Array of objects of type {@code T} to be made into rows
+     * @return Array of new {@link TableRow TableRows}
+     * @see #makeRow(Object)
+     */
+    @SafeVarargs
+    public final TableRow[] makeRows(T... objects) {
+        TableRow[] rows = new TableRow[objects.length];
+        for (int i = 0; i < rows.length; i++) {
+            rows[i] = makeRow(objects[i]);
+        }
+
+        return rows;
     }
 
     /**
@@ -30,7 +65,7 @@ public class RowFactory {
      * @param item {@link TableRowItem} to make the row from
      * @return he new {@link TableRow}T
      */
-    public static TableRow makeRow(TableRowItem item) {
+    public static TableRow makeRowFromTableRowItem(TableRowItem item) {
         List<String> headers = getHeaderDeclarations(item.getClass());
         List<String> values = getAnnotatedValues(item);
 

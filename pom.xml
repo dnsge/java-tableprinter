@@ -6,7 +6,19 @@
 
     <groupId>org.dnsge.util</groupId>
     <artifactId>tableprinter</artifactId>
-    <version>1.3</version>
+    <version>1.4</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <contributors>
+        <contributor>
+            <name>Daniel Sage</name>
+            <url>https://github.com/dnsge</url>
+        </contributor>
+    </contributors>
 
     <build>
         <plugins>
