@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TablePrinterTest {
@@ -29,7 +29,7 @@ class TablePrinterTest {
         TableColumn<String> countryColumn = new TableColumn<>("Country",
                 "United States", "Canada", "China", null, "France", "Portugal", "Russia", null);
 
-        assertArrayEquals(new String[]{
+        assertEquals(List.of(
                 "#   | Identifier | Month     | Country      ",
                 "--------------------------------------------",
                 "1   | aaa        | January   | United States",
@@ -40,7 +40,7 @@ class TablePrinterTest {
                 "18  |            |           | Portugal     ",
                 "19  | eee        | October   | Russia       ",
                 "20  |            | May       |              "
-        }, TablePrinter.columnsToStringTable(numberColumn, idColumn, monthColumn, countryColumn));
+        ), TablePrinter.columnsToStringTable(numberColumn, idColumn, monthColumn, countryColumn));
 
     }
 
@@ -49,12 +49,12 @@ class TablePrinterTest {
         TableRow tableRow1 = new TableRow(List.of("A", "b", "c"), List.of("1", "234", "5678910"));
         TableRow tableRow2 = new TableRow(List.of("A", "b", "c"), List.of("56", "2", "1824.5"));
 
-        assertArrayEquals(new String[]{
+        assertEquals(List.of(
                 "A  | b   | c      ",
                 "------------------",
                 "1  | 234 | 5678910",
-                "56 | 2   | 1824.5 ",
-        }, TablePrinter.rowsToStringTable(tableRow1, tableRow2));
+                "56 | 2   | 1824.5 "
+        ), TablePrinter.rowsToStringTable(tableRow1, tableRow2));
     }
 
     @Test
@@ -97,13 +97,13 @@ class TablePrinterTest {
         Person p2 = new Person("David", 16, null, "abc12345");
         Person p3 = new Person("Joey", 63, "Disney", "abc");
 
-        assertArrayEquals(new String[]{
+        assertEquals(List.of(
                 "Name   | Age | Workplace | Birth year",
                 "-------------------------------------",
                 "Amelia | 28  | Google    | 1990      ",
                 "David  | 16  |           | 2002      ",
                 "Joey   | 63  | Disney    | 1955      "
-        }, TablePrinter.rowsToStringTable(TablePrinter.objectsToRowArray(p1, p2, p3)));
+        ), TablePrinter.rowsToStringTable(TablePrinter.objectsToRowList(p1, p2, p3)));
 
     }
 }

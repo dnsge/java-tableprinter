@@ -31,14 +31,17 @@ import org.dnsge.util.tableprinter.row.TableRowItem;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Class to print different objects in the form of a table
  *
  * @author Daniel Sage
- * @version 1.3
+ * @version 1.5
  */
 public class TablePrinter {
 
@@ -47,15 +50,26 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@code String[]} of lines from some {@code TableColumns}
+     * Creates a {@link List<String>} of lines from some {@link TableColumn TableColumns}
      *
      * @param columns {@code TableColumn[]} of table columns to make the table from
-     * @return {@code String[]} of the lines of the table
+     * @return {@link List<String>} of the lines of the table
      * @see TableColumn
      */
-    public static String[] columnsToStringTable(TableColumn... columns) {
+    public static List<String> columnsToStringTable(TableColumn... columns) {
         // Convert the columns to rows
-        return rowsToStringTable(RowFactory.makeRows(columns));
+        return rowsToStringTable(RowFactory.makeRowsFromColumns(columns));
+    }
+
+    /**
+     * Creates a {@link List<String>} of lines from a {@link List<TableColumn>}
+     *
+     * @param columns {@link List<TableColumn>} to use
+     * @return {@link List<String>} of lines
+     * @see TableColumn
+     */
+    public static List<String> columnsToStringTable(List<TableColumn> columns) {
+        return rowsToStringTable(RowFactory.makeRowsFromColumns(columns));
     }
 
     /**
@@ -75,34 +89,46 @@ public class TablePrinter {
      * @see PrintStream
      */
     public static void printColumns(PrintStream stream, TableColumn... columns) {
-        String[] lines = columnsToStringTable(columns);
-        stream.println(String.join("\n", lines));
+        stream.println(String.join("\n", columnsToStringTable(columns)));
     }
 
     /**
-     * Creates a {@code String[]} of lines from some {@code TableRows} of the same type
+     * Creates a {@link List<String>} of lines from some {@code TableRows}
      *
      * @param rows {@code TableRow[]} of table rows to make the table from
-     * @return {@code String[]} of the lines of the table
+     * @return {@link List<String>} of lines
      * @see TableRow
      */
-    public static String[] rowsToStringTable(TableRow... rows) {
-        if (rows.length == 0)
-            return new String[]{"Empty Table"};
+    public static List<String> rowsToStringTable(TableRow... rows) {
+        return rowsToStringTable(Arrays.asList(rows));
+    }
+
+    /**
+     * Creates a {@link List<String>} of lines from a {@link List<TableRow>}
+     *
+     * @param rows {@link List<TableRow>} to use
+     * @return {@link List<String>} of lines
+     */
+    public static List<String> rowsToStringTable(List<TableRow> rows) {
+        if (rows.size() == 0)
+            return List.of("Empty Table");
 
         verifyValidity(rows);
 
-        String[] lines = new String[rows.length + 2];
+        List<String> lines = new ArrayList<>();
 
-        TableHeader header = rows[0].getHeader();
+        TableHeader header = rows.get(0).getHeader();
         int[] longestByColumn = new int[header.headerCount()];
 
         // Find the longest per column
         for (TableRow row : rows) {
             int i = 0;
-            for (String fieldValue : row.getCellValues()) {
+            for (String cellValue : row.getCellValues()) {
                 try {
-                    longestByColumn[i] = Math.max(Math.max(longestByColumn[i], fieldValue.length()), header.getHeaderValues().get(i).length());
+                    longestByColumn[i] = maxOfThree(
+                            longestByColumn[i],
+                            cellValue.length(),
+                            header.getHeaderValues().get(i).length());
                 } catch (NullPointerException ignored) {
                 }
                 i++;
@@ -119,20 +145,20 @@ public class TablePrinter {
         }
 
         // Header
-        lines[0] = String.join(" | ", paddedHeaders);
+        lines.add(String.join(" | ", paddedHeaders));
         // Dashes
-        lines[1] = dashDivider(lines[0].length());
+        lines.add(dashDivider(lines.get(0).length()));
 
         // Generate rows
-        int rowNumber = 2;
         for (TableRow row : rows) {
-            String[] thisRow = new String[row.getCellValues().size()];
-            for (int columnNum = 0; columnNum < row.getCellValues().size(); columnNum++) {
-                thisRow[columnNum] = padToLength(row.getCellValues().get(columnNum), longestByColumn[columnNum]);
+            List<String> thisRow = new ArrayList<>();
+
+            int columnNum = 0;
+            for (String cellValue : row.getCellValues()) {
+                thisRow.add(padToLength(cellValue, longestByColumn[columnNum++]));
             }
 
-            lines[rowNumber] = String.join(" | ", thisRow);
-            rowNumber++;
+            lines.add(String.join(" | ", thisRow));
         }
 
         return lines;
@@ -144,41 +170,51 @@ public class TablePrinter {
      * @param rows {@code TableRow[]} of table rows of one type to print
      */
     public static void printRows(TableRow... rows) {
-        printRows(System.out, rows);
+        printRows(Arrays.asList(rows));
     }
 
     /**
      * Prints a {@code TableRow[]} to a {@code PrintStream}
      *
      * @param stream {@code PrintStream} to print to
-     * @param rows   {@code TableRow[]} of table rows of one type to print
+     * @param rows   {@code TableRow[]} of rows to print
      * @see PrintStream
      */
     public static void printRows(PrintStream stream, TableRow... rows) {
-        String[] lines = rowsToStringTable(rows);
-        stream.println(String.join("\n", lines));
+        printRows(stream, Arrays.asList(rows));
     }
 
     /**
-     * Creates an array of {@link TableRow TableRows} from an
-     * array of {@link TableRowItem TableRowItems}
+     * Prints a {@link List<TableRow>} to {@link System#out}
+     *
+     * @param rows {@link List<TableRow>} of rows to print
+     */
+    public static void printRows(List<TableRow> rows) {
+        printRows(System.out, rows);
+    }
+
+    public static void printRows(PrintStream stream, List<TableRow> rows) {
+        stream.println(String.join("\n", rowsToStringTable(rows)));
+    }
+
+    /**
+     * Creates a {@link List<TableRow>} from an some {@link TableRowItem TableRowItems}
      *
      * @param rows Array of {@link TableRowItem TableRowItems}
-     * @return Array of {@link TableRow TableRows}
+     * @return {@link List<TableRow>} from the {@link TableRowItem} array
      */
-    public static TableRow[] objectsToRowArray(TableRowItem... rows) {
-        return Stream.of(rows).map(RowFactory::makeRowFromTableRowItem).toArray(TableRow[]::new);
+    public static List<TableRow> objectsToRowList(TableRowItem... rows) {
+        return Stream.of(rows).map(RowFactory::makeRowFromTableRowItem).collect(Collectors.toList());
     }
 
     /**
-     * Prints a {@link TableRowItem TableRowItems} to a
-     * {@link PrintStream}
+     * Prints a {@link TableRowItem TableRowItems} to a {@link PrintStream}
      *
      * @param stream {@link PrintStream} to print to
      * @param items  Array of {@link TableRowItem TableRowItems} to print
      */
     public static void printObjects(PrintStream stream, TableRowItem... items) {
-        printRows(stream, objectsToRowArray(items));
+        printRows(stream, objectsToRowList(items));
     }
 
     /**
@@ -191,6 +227,8 @@ public class TablePrinter {
     }
 
     /**
+     * Pads a string with spaces at the end to a desired length
+     *
      * @param input         String to pad
      * @param desiredLength Desired length of resulting string
      * @return Padded String
@@ -201,7 +239,7 @@ public class TablePrinter {
 
         int spacesNeeded = desiredLength - input.length();
 
-        if (spacesNeeded < 0)
+        if (spacesNeeded <= 0)
             return input;
 
         StringBuilder outputBuilder = new StringBuilder(spacesNeeded);
@@ -210,21 +248,6 @@ public class TablePrinter {
         }
 
         return input + outputBuilder.toString();
-    }
-
-    /**
-     * @param columns Array of columns
-     * @return The length of the longest column
-     */
-    private static int longestColumnLength(TableColumn... columns) {
-        TableColumn longest = columns[0];
-        for (TableColumn column : columns) {
-            if (column.length() > longest.length()) {
-                longest = column;
-            }
-        }
-
-        return longest.length();
     }
 
     /**
@@ -241,13 +264,17 @@ public class TablePrinter {
         return dashDividerBuilder.toString();
     }
 
-    private static void verifyValidity(TableRow... rows) {
-        TableHeader checkHeader = rows[0].getHeader();
-        for (int i = 1; i < rows.length; i++) {
-            if (!rows[i].getHeader().equals(checkHeader)) {
+    private static void verifyValidity(List<TableRow> rows) {
+        TableHeader checkHeader = rows.get(0).getHeader();
+        for (Iterator<TableRow> iterator = rows.listIterator(1); iterator.hasNext(); ) {
+            if (!iterator.next().getHeader().equals(checkHeader)) {
                 throw new IllegalArgumentException("TableRows don't share the same TableHeader");
             }
         }
+    }
+
+    private static int maxOfThree(int a, int b, int c) {
+        return Math.max(Math.max(a, b), c);
     }
 
 }

@@ -28,7 +28,6 @@ import org.dnsge.util.tableprinter.TableHeader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +45,7 @@ public final class TableRow {
     /**
      * Create a {@code TableRow} from predefined values and header
      *
-     * @param header    {@code String[]} of header for each cell in the row
+     * @param header     {@link TableHeader} with header for each cell in the row
      * @param cellValues {@code String[]} of values for each cell in the row
      */
     public TableRow(TableHeader header, String[] cellValues) {
@@ -56,11 +55,11 @@ public final class TableRow {
     /**
      * Create a {@code TableRow} from predefined values and header
      *
-     * @param header    {@link TableHeader} with header for each cell in the row
-     * @param cellValues {@code Collection<String>} of values for each cell in the row
+     * @param header     {@link TableHeader} with header for each cell in the row
+     * @param cellValues {@link List<String>} of values for each cell in the row
      * @throws IllegalArgumentException if the number of header items != the number of cell values
      */
-    public TableRow(TableHeader header, Collection<String> cellValues) {
+    public TableRow(TableHeader header, List<String> cellValues) {
         if (header.headerCount() != cellValues.size()) {
             throw new IllegalArgumentException("The number of header items is not the same as the number of cell values");
         }
@@ -70,7 +69,7 @@ public final class TableRow {
                 .collect(Collectors.toList());
     }
 
-    public TableRow(Collection<String> headerValues, Collection<String> cellValues) {
+    public TableRow(List<String> headerValues, List<String> cellValues) {
         this(new TableHeader(headerValues), cellValues);
     }
 

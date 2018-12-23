@@ -7,9 +7,7 @@ import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Class with static methods that creates {@link TableRow TableRows} from
@@ -17,7 +15,7 @@ import java.util.Objects;
  *
  * @param <T> Type of objects that will be made into a {@link TableRow}
  * @author Daniel Sage
- * @version 1.1
+ * @version 1.5
  */
 public class RowFactory<T> {
 
@@ -50,13 +48,17 @@ public class RowFactory<T> {
      * @see #makeRow(Object)
      */
     @SafeVarargs
-    public final TableRow[] makeRows(T... objects) {
-        TableRow[] rows = new TableRow[objects.length];
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = makeRow(objects[i]);
+    public final List<TableRow> makeRows(T... objects) {
+        return makeRows(Arrays.asList(objects));
+    }
+
+    public final List<TableRow> makeRows(List<T> objects) {
+        List<TableRow> rowList = new ArrayList<>();
+        for (T object : objects) {
+            rowList.add(makeRow(object));
         }
 
-        return rows;
+        return rowList;
     }
 
     /**
@@ -78,24 +80,29 @@ public class RowFactory<T> {
      * @param items {@link TableRowItem TableRowItems} to make the rows from
      * @return The new {@link TableRow TableRows}
      */
-    public static TableRow[] makeRows(TableColumn... items) {
-        TableRow[] rows = new TableRow[longestColumn(items).length()];
-        for (int i = 0; i < rows.length; i++) {
-            rows[i] = makeRow(i, items);
+    public static List<TableRow> makeRowsFromColumns(TableColumn... items) {
+        return makeRowsFromColumns(Arrays.asList(items));
+    }
+
+    public static List<TableRow> makeRowsFromColumns(Collection<TableColumn> items) {
+        List<TableRow> rowList = new ArrayList<>();
+
+        for (int i = 0; i < longestColumn(items).length(); i++) {
+            rowList.add(makeRowFromColumns(i, items));
         }
 
-        return rows;
+        return rowList;
     }
 
     /**
-     * Creates a {@link TableRow} from an array of {@link TableColumn TableColumns} at a
+     * Creates a {@link TableRow} from a {@link List<TableColumn>>} at a
      * certain index
      *
      * @param index Row index to look at
-     * @param items {@link TableColumn TableColumns} to make the row from
+     * @param items {@link List<TableColumn>>} to make the row from
      * @return The new {@link TableRow}
      */
-    private static TableRow makeRow(int index, TableColumn... items) {
+    private static TableRow makeRowFromColumns(int index, Collection<TableColumn> items) {
         List<String> headers = new ArrayList<>();
         List<String> values = new ArrayList<>();
 
@@ -126,7 +133,16 @@ public class RowFactory<T> {
             }
         }
         return longest;
+    }
 
+    private static TableColumn longestColumn(Collection<TableColumn> items) {
+        TableColumn longest = null;
+        for (TableColumn tc : items) {
+            if (tc.length() >= (longest == null ? 0 : longest.length())) {
+                longest = tc;
+            }
+        }
+        return longest;
     }
 
     /**
@@ -228,5 +244,6 @@ public class RowFactory<T> {
 
         return rList;
     }
+
 
 }
