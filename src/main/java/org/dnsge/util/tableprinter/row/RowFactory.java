@@ -15,11 +15,11 @@ import java.util.*;
  *
  * @param <T> Type of objects that will be made into a {@link TableRow}
  * @author Daniel Sage
- * @version 1.5
+ * @version 1.5.1
  */
 public class RowFactory<T> {
 
-    private RowMappingProtocol<T> protocol;
+    private final RowMappingProtocol<T> protocol;
 
     /**
      * Creates a new RowFactory that creates rows based off of a {@link RowMappingProtocol}
@@ -120,21 +120,11 @@ public class RowFactory<T> {
     }
 
     /**
-     * Gets the {@link TableColumn} by {@link TableColumn#length()}
+     * Gets the longest {@link TableColumn} by {@link TableColumn#length()}
      *
-     * @param items Array of {@link TableColumn TableColumns} to look through
+     * @param items {@link List<TableColumn>} to look through
      * @return Longest {@link TableColumn}
      */
-    private static TableColumn longestColumn(TableColumn... items) {
-        TableColumn longest = null;
-        for (TableColumn tc : items) {
-            if (tc.length() >= (longest == null ? 0 : longest.length())) {
-                longest = tc;
-            }
-        }
-        return longest;
-    }
-
     private static TableColumn longestColumn(Collection<TableColumn> items) {
         TableColumn longest = null;
         for (TableColumn tc : items) {

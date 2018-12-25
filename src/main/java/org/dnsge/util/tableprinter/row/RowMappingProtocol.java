@@ -12,12 +12,12 @@ import java.util.stream.Collectors;
  *
  * @param <T> Type of object that is used as input
  * @author Daniel Sage
- * @version 1.0
+ * @version 1.5.1
  */
 public class RowMappingProtocol<T> {
 
-    private TableHeader tableHeader;
-    private Function<T, List<?>> mappingFucntion;
+    private final TableHeader tableHeader;
+    private final Function<T, List<?>> mappingFunction;
 
     /**
      * Creates a new RowMappingProtocol with a {@link TableHeader} and a
@@ -25,11 +25,11 @@ public class RowMappingProtocol<T> {
      * list of Objects
      *
      * @param tableHeader {@link TableHeader}
-     * @param mappingFucntion {@link Function} that maps an object of type {@code T}
+     * @param mappingFunction {@link Function} that maps an object of type {@code T}
      */
-    public RowMappingProtocol(TableHeader tableHeader, Function<T, List<?>> mappingFucntion) {
+    public RowMappingProtocol(TableHeader tableHeader, Function<T, List<?>> mappingFunction) {
         this.tableHeader = tableHeader;
-        this.mappingFucntion = mappingFucntion;
+        this.mappingFunction = mappingFunction;
     }
 
     /**
@@ -39,7 +39,7 @@ public class RowMappingProtocol<T> {
      * @return {@link List<String>} of results (Object::toString is called on each result)
      */
     public List<String> apply(T input) {
-        List<?> applied = mappingFucntion.apply(input);
+        List<?> applied = mappingFunction.apply(input);
         return applied.stream().map(o -> o == null ? "" : o)
                 .map(Object::toString).collect(Collectors.toList());
     }
