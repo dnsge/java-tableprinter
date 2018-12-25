@@ -41,7 +41,7 @@ import java.util.stream.Stream;
  * Class to print different objects in the form of a table
  *
  * @author Daniel Sage
- * @version 1.5
+ * @version 1.5.2
  */
 public class TablePrinter {
 
@@ -50,10 +50,10 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@link List<String>} of lines from some {@link TableColumn TableColumns}
+     * Creates a {@link List} of Strings of lines from some {@link TableColumn TableColumns}
      *
      * @param columns {@code TableColumn[]} of table columns to make the table from
-     * @return {@link List<String>} of the lines of the table
+     * @return {@link List} of Strings of the lines of the table
      * @see TableColumn
      */
     public static List<String> columnsToStringTable(TableColumn... columns) {
@@ -62,10 +62,10 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@link List<String>} of lines from a {@link List<TableColumn>}
+     * Creates a {@link List} of Strings of lines from a {@link List} of {@link TableColumn TableColumns}
      *
-     * @param columns {@link List<TableColumn>} to use
-     * @return {@link List<String>} of lines
+     * @param columns {@link List} of {@link TableColumn TableColumns} to use
+     * @return {@link List} of Strings of lines
      * @see TableColumn
      */
     public static List<String> columnsToStringTable(List<TableColumn> columns) {
@@ -93,10 +93,10 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@link List<String>} of lines from some {@code TableRows}
+     * Creates a {@link List} of Strings of lines from some {@code TableRows}
      *
      * @param rows {@code TableRow[]} of table rows to make the table from
-     * @return {@link List<String>} of lines
+     * @return {@link List} of Strings of lines
      * @see TableRow
      */
     public static List<String> rowsToStringTable(TableRow... rows) {
@@ -104,10 +104,10 @@ public class TablePrinter {
     }
 
     /**
-     * Creates a {@link List<String>} of lines from a {@link List<TableRow>}
+     * Creates a {@link List} of Strings of lines from a {@link List} of {@link TableRow TableRows}
      *
-     * @param rows {@link List<TableRow>} to use
-     * @return {@link List<String>} of lines
+     * @param rows {@link List} of {@link TableRow TableRows} to use
+     * @return {@link List} of Strings of lines
      */
     public static List<String> rowsToStringTable(List<TableRow> rows) {
         if (rows.size() == 0)
@@ -185,23 +185,30 @@ public class TablePrinter {
     }
 
     /**
-     * Prints a {@link List<TableRow>} to {@link System#out}
+     * Prints a {@link List} of {@link TableRow TableRows} to {@link System#out}
      *
-     * @param rows {@link List<TableRow>} of rows to print
+     * @param rows {@link List} of {@link TableRow TableRows} to print
      */
     public static void printRows(List<TableRow> rows) {
         printRows(System.out, rows);
     }
 
+    /**
+     * Prints a {@link List} of {@link TableRow TableRows} to a {@link PrintStream}
+     *
+     * @param stream {@link PrintStream} to print to
+     * @param rows {@link List} of {@link TableRow TableRows} to print
+     */
     public static void printRows(PrintStream stream, List<TableRow> rows) {
         stream.println(String.join("\n", rowsToStringTable(rows)));
     }
 
     /**
-     * Creates a {@link List<TableRow>} from an some {@link TableRowItem TableRowItems}
+     * Creates a {@link List} of {@link TableRow TableRows} from
+     * some {@link TableRowItem TableRowItems}
      *
      * @param rows Array of {@link TableRowItem TableRowItems}
-     * @return {@link List<TableRow>} from the {@link TableRowItem} array
+     * @return {@link List} of {@link TableRow TableRows} from the {@link TableRowItem} array
      */
     public static List<TableRow> objectsToRowList(TableRowItem... rows) {
         return Stream.of(rows).map(RowFactory::makeRowFromTableRowItem).collect(Collectors.toList());

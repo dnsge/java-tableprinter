@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
  *
  * @param <T> Type of object that is used as input
  * @author Daniel Sage
- * @version 1.5.1
+ * @version 1.5.2
  */
 public class RowMappingProtocol<T> {
 
@@ -36,7 +36,7 @@ public class RowMappingProtocol<T> {
      * Applies the mapping function onto an object of type {@code T}
      *
      * @param input Object to map from
-     * @return {@link List<String>} of results (Object::toString is called on each result)
+     * @return {@link List} of Strings of results (Object::toString is called on each result)
      */
     public List<String> apply(T input) {
         List<?> applied = mappingFunction.apply(input);
