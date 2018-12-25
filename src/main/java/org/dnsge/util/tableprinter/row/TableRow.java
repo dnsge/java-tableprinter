@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * Class that represents a row in a table
  *
  * @author Daniel Sage
- * @version 1.2
+ * @version 1.5.2
  */
 public final class TableRow {
 
@@ -56,7 +56,7 @@ public final class TableRow {
      * Create a {@code TableRow} from predefined values and header
      *
      * @param header     {@link TableHeader} with header for each cell in the row
-     * @param cellValues {@link List<String>} of values for each cell in the row
+     * @param cellValues {@link List} of Strings of values for each cell in the row
      * @throws IllegalArgumentException if the number of header items != the number of cell values
      */
     public TableRow(TableHeader header, List<String> cellValues) {
