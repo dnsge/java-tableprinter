@@ -12,19 +12,20 @@ import java.util.stream.Collectors;
  *
  * @param <T> Type of object that is used as input
  * @author Daniel Sage
- * @version 1.5.2
+ * @version 1.5.3
  */
 public class RowMappingProtocol<T> {
 
     private final TableHeader tableHeader;
     private final Function<T, List<?>> mappingFunction;
+    private RowFactory<T> myFactory;
 
     /**
      * Creates a new RowMappingProtocol with a {@link TableHeader} and a
      * {@link Function} that takes an input of type {@code T} and returns a
      * list of Objects
      *
-     * @param tableHeader {@link TableHeader}
+     * @param tableHeader     {@link TableHeader}
      * @param mappingFunction {@link Function} that maps an object of type {@code T}
      */
     public RowMappingProtocol(TableHeader tableHeader, Function<T, List<?>> mappingFunction) {
@@ -51,6 +52,19 @@ public class RowMappingProtocol<T> {
      */
     public TableHeader getTableHeader() {
         return tableHeader;
+    }
+
+    /**
+     * Returns a {@link RowFactory} for this RowMappingProtocol.
+     *
+     * @return a {@link RowFactory} for this RowMappingProtocol
+     */
+    public RowFactory<T> getRowFactory() {
+        if (myFactory == null) {
+            myFactory = new RowFactory<>(this);
+        }
+
+        return myFactory;
     }
 
 }

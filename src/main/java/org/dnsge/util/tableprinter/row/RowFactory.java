@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @param <T> Type of objects that will be made into a {@link TableRow}
  * @author Daniel Sage
- * @version 1.5.1
+ * @version 1.5.3
  */
 public class RowFactory<T> {
 
@@ -95,11 +95,11 @@ public class RowFactory<T> {
     }
 
     /**
-     * Creates a {@link TableRow} from a {@link List<TableColumn>>} at a
-     * certain index
+     * Creates a {@link TableRow} from a {@link List} of {@link TableColumn TableColumns}
+     * at a certain index
      *
      * @param index Row index to look at
-     * @param items {@link List<TableColumn>>} to make the row from
+     * @param items {@link List} of {@link TableColumn TableColumns} to make the row from
      * @return The new {@link TableRow}
      */
     private static TableRow makeRowFromColumns(int index, Collection<TableColumn> items) {
@@ -122,7 +122,7 @@ public class RowFactory<T> {
     /**
      * Gets the longest {@link TableColumn} by {@link TableColumn#length()}
      *
-     * @param items {@link List<TableColumn>} to look through
+     * @param items {@link List} of {@link TableColumn TableColumns} to look through
      * @return Longest {@link TableColumn}
      */
     private static TableColumn longestColumn(Collection<TableColumn> items) {
