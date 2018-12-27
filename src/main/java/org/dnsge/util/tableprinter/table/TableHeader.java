@@ -1,4 +1,4 @@
-package org.dnsge.util.tableprinter;
+package org.dnsge.util.tableprinter.table;
 
 import java.util.*;
 

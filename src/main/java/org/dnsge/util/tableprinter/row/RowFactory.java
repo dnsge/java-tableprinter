@@ -1,13 +1,15 @@
 package org.dnsge.util.tableprinter.row;
 
-import org.dnsge.util.tableprinter.TableHeader;
 import org.dnsge.util.tableprinter.column.TableColumn;
+import org.dnsge.util.tableprinter.table.TableHeader;
 
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Class with static methods that creates {@link TableRow TableRows} from
@@ -15,7 +17,7 @@ import java.util.*;
  *
  * @param <T> Type of objects that will be made into a {@link TableRow}
  * @author Daniel Sage
- * @version 1.5.3
+ * @version 2.0
  */
 public class RowFactory<T> {
 
@@ -81,10 +83,41 @@ public class RowFactory<T> {
      * @return The new {@link TableRow TableRows}
      */
     public static List<TableRow> makeRowsFromColumns(TableColumn... items) {
-        return makeRowsFromColumns(Arrays.asList(items));
+        return RowFactory.makeRowsFromColumns(Arrays.asList(items));
     }
 
-    public static List<TableRow> makeRowsFromColumns(Collection<TableColumn> items) {
+    /**
+     * Creates a {@link List} of {@link TableRow TableRows} from
+     * some {@link TableRowItem TableRowItems}
+     *
+     * @param rows Array of {@link TableRowItem TableRowItems}
+     * @return {@link List} of {@link TableRow TableRows} from the {@link TableRowItem} array
+     */
+    public static List<TableRow> objectsToRowList(TableRowItem... rows) {
+        return Stream.of(rows).map(RowFactory::makeRowFromTableRowItem).collect(Collectors.toList());
+    }
+
+    /**
+     * Creates a {@link List} of {@link TableRow TableRows} from a {@link List} of {@link TableRowItem TableRowItems}
+     *
+     * @param rows {@link List} of {@link TableRowItem TableRowItems}
+     * @return {@link List} of {@link TableRow TableRows} from the {@link TableRowItem} array
+     */
+    public static List<TableRow> objectsToRowList(List<TableRowItem> rows) {
+        return rows.stream().map(RowFactory::makeRowFromTableRowItem).collect(Collectors.toList());
+    }
+
+    /**
+     * Creates a {@link List} of {@link TableRow TableRows} from a {@link List} of {@link TableColumn TableColumns}
+     *
+     * @param items {@link List} of {@link TableColumn TableColumns}
+     * @return {@link List} of {@link TableRow TableRows}
+     */
+    public static List<TableRow> makeRowsFromColumns(List<TableColumn> items) {
+        if (items.size() == 0) {
+            return List.of();
+        }
+
         List<TableRow> rowList = new ArrayList<>();
 
         for (int i = 0; i < longestColumn(items).length(); i++) {
@@ -125,7 +158,7 @@ public class RowFactory<T> {
      * @param items {@link List} of {@link TableColumn TableColumns} to look through
      * @return Longest {@link TableColumn}
      */
-    private static TableColumn longestColumn(Collection<TableColumn> items) {
+    private static TableColumn longestColumn(List<TableColumn> items) {
         TableColumn longest = null;
         for (TableColumn tc : items) {
             if (tc.length() >= (longest == null ? 0 : longest.length())) {
@@ -133,27 +166,6 @@ public class RowFactory<T> {
             }
         }
         return longest;
-    }
-
-    /**
-     * Gets a list of header declarations using the {@link TableItem}
-     * annotation
-     *
-     * @param clazz Class to look at
-     * @return List of Strings representing the header names
-     */
-    private static List<String> getHeaderDeclarations(Class<?> clazz) {
-        List<String> rList = new ArrayList<>();
-
-        for (Field f : clazz.getDeclaredFields()) {
-            rList.addAll(extractAnnotationHeaders(f));
-        }
-
-        for (Method m : clazz.getDeclaredMethods()) {
-            rList.addAll(extractAnnotationHeaders(m));
-        }
-
-        return rList;
     }
 
     /**
@@ -177,6 +189,27 @@ public class RowFactory<T> {
             } else {
                 rList.add(header);
             }
+        }
+
+        return rList;
+    }
+
+    /**
+     * Gets a list of header declarations using the {@link TableItem}
+     * annotation
+     *
+     * @param clazz Class to look at
+     * @return List of Strings representing the header names
+     */
+    private static List<String> getHeaderDeclarations(Class<?> clazz) {
+        List<String> rList = new ArrayList<>();
+
+        for (Field f : clazz.getDeclaredFields()) {
+            rList.addAll(extractAnnotationHeaders(f));
+        }
+
+        for (Method m : clazz.getDeclaredMethods()) {
+            rList.addAll(extractAnnotationHeaders(m));
         }
 
         return rList;
@@ -234,6 +267,5 @@ public class RowFactory<T> {
 
         return rList;
     }
-
 
 }

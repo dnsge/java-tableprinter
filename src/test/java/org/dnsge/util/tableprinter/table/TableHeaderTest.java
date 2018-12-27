@@ -1,4 +1,4 @@
-package org.dnsge.util.tableprinter;
+package org.dnsge.util.tableprinter.table;
 
 import org.junit.jupiter.api.Test;
 

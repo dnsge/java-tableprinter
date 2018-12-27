@@ -1,6 +1,6 @@
 package org.dnsge.util.tableprinter.row;
 
-import org.dnsge.util.tableprinter.TableHeader;
+import org.dnsge.util.tableprinter.table.TableHeader;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

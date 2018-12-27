@@ -1,6 +1,6 @@
 package org.dnsge.util.tableprinter.row;
 
-import org.dnsge.util.tableprinter.TableHeader;
+import org.dnsge.util.tableprinter.table.TableHeader;
 
 import java.util.List;
 import java.util.function.Function;

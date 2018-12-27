@@ -24,18 +24,19 @@
 
 package org.dnsge.util.tableprinter.row;
 
-import org.dnsge.util.tableprinter.TableHeader;
+import org.dnsge.util.tableprinter.table.TableHeader;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
  * Class that represents a row in a table
  *
  * @author Daniel Sage
- * @version 1.5.2
+ * @version 2.0
  */
 public final class TableRow {
 
@@ -86,4 +87,19 @@ public final class TableRow {
     public TableHeader getHeader() {
         return header;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TableRow tableRow = (TableRow) o;
+        return Objects.equals(header, tableRow.header) &&
+                Objects.equals(cellValues, tableRow.cellValues);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(header, cellValues);
+    }
+
 }
